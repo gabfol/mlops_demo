@@ -1,0 +1,27 @@
+artifact_path: elasticnet_model_onnx
+flavors:
+  onnx:
+    code: null
+    data: model.onnx
+    onnx_session_options: null
+    onnx_version: 1.18.0
+    providers:
+    - CUDAExecutionProvider
+    - CPUExecutionProvider
+  python_function:
+    data: model.onnx
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.onnx
+    python_version: 3.10.16
+mlflow_version: 2.19.0
+model_size_bytes: 77222
+model_uuid: d9d7c0e254314d76b0f644a5fdf40c67
+run_id: t4bc-2izl-q8ep-hacw
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+utc_time_created: '2025-06-14 20:26:06.023015'
