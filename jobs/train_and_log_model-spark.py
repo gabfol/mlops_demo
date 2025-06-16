@@ -1,3 +1,4 @@
+from pyspark.sql import SparkSession
 import boto3
 import os
 import pandas as pd
@@ -12,11 +13,16 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 from mlflow.models import infer_signature
 
+
+# Initialize Spark session
+spark = SparkSession.builder.appName("wine_quality_job").getOrCreate()
+#spark = SparkSession.builder.appName("HelloWorldApp").config("spark.executor.instances", "2").getOrCreate()
+
+
 aws_access_key_id = os.environ["AWS_ACCESS_KEY"]
 aws_secret_access_key = os.environ["AWS_SECRET_ACCESS_KEY"]
 
-#print(aws_access_key_id)
-#print(aws_secret_access_key)
+print(f">>>> Read AWS credentials to access rawdata bucket")
 
 # S3 configuration
 # bucket = 'gab-bucket-removeme'
@@ -36,11 +42,6 @@ s3 = boto3.client(
     aws_access_key_id=aws_access_key_id,
     aws_secret_access_key=aws_secret_access_key
 )
-
-
-# List the object to verify access
-response = s3.list_objects_v2(Bucket=bucket, Prefix=key)
-print(response.get("Contents"))
 
 # Get object metadata
 head = s3.head_object(Bucket=bucket, Key=key)

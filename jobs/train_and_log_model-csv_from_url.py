@@ -12,52 +12,10 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 from mlflow.models import infer_signature
 
-aws_access_key_id = os.environ["AWS_ACCESS_KEY"]
-aws_secret_access_key = os.environ["AWS_SECRET_ACCESS_KEY"]
 
-#print(aws_access_key_id)
-#print(aws_secret_access_key)
-
-# S3 configuration
-# bucket = 'gab-bucket-removeme'
-# key = 'rawdata/winequality-red.csv'  # Update with the actual key in your bucket
-
-bucket = os.environ["S3_RAWDATA_BUCKET"]
-key = os.environ["S3_RAWDATA_KEY"]  # Update with the actual key in your bucket
-
-print(f">>>> Reading rawdata csv from s3 bucket ")
-print(f">>>>>>>> Bucket: {bucket} ....")
-print(f">>>>>>>> Bucket Key: {key} ....")
-
-
-# Create S3 client with credentials
-s3 = boto3.client(
-    's3',
-    aws_access_key_id=aws_access_key_id,
-    aws_secret_access_key=aws_secret_access_key
-)
-
-
-# List the object to verify access
-response = s3.list_objects_v2(Bucket=bucket, Prefix=key)
-print(response.get("Contents"))
-
-# Get object metadata
-head = s3.head_object(Bucket=bucket, Key=key)
-last_modified = head['LastModified']
-
-# Check if object was modified within the last hour
-now = datetime.now(timezone.utc)
-if (now - last_modified) <= timedelta(hours=1):
-    # Read object from S3
-    response = s3.get_object(Bucket=bucket, Key=key)
-    body = response['Body'].read().decode('utf-8')
-
-    # Load CSV into DataFrame
-    df = pd.read_csv(StringIO(body), sep=';')
-
-else:
-    print("Object is older than 1 hour. Skipping.")
+# 3. Load data: 
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
+df = pd.read_csv(url, sep=';')
 
 # Display data
 df.head()
@@ -78,7 +36,7 @@ import sys, os, shlex
 sys.argv = ["script"] + shlex.split(os.environ.get("JOB_ARGUMENTS", ""))
 print(sys.argv)
 
-with mlflow.start_run(run_name="elasticnet_wine-job1008"):
+with mlflow.start_run(run_name="elasticnet_wine-job"):
 
     # Log hyperparameters
     alpha = 0.5

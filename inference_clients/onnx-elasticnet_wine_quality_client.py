@@ -1,4 +1,3 @@
-
 #!pip install open-inference-openapi
 from open_inference.openapi.client import OpenInferenceClient, InferenceRequest
 import httpx
